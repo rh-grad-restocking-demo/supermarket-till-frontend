@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <script src="node_modules/matter-js/build/matter.min.js"></script>
+        <style>
+            html,body {
+                margin: 0;
+                padding: 0;
+            }
+            #checkout {
+                background-image: url('./checkout-background.png');
+                background-size: 1900px 1000px;
+            }
+            #pay {
+                position: fixed;
+                right: 20px;
+                top: 20px;
+                font-size: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="checkout"></div>
+        <button type="button" id="pay" onclick="pay()">pay</button>
+    </body>
+
+    <script>
+function pay() {
+    sendItems();
+    showReceipt();
+}
+function showReceipt() {
+    alert(`
+Thank you for shopping at RedHat!
+Receipt:
+
+${Object.entries(cart)
+    .reduce((acc, [product, amount]) => acc + `${product.padEnd(10)} x${amount} ${(amount * PRODUCTS[product].price).toFixed(2).padStart(5)}\n`, '')
+}
+${'TOTAL'.padEnd(10)}   ${Object.entries(cart).reduce((acc, [product, amount]) => acc + PRODUCTS[product].price * amount, 0).toFixed(2).padStart(5)}
+`);
+}
+function sendItems() {
+    // SEND THE REQUEST WITH ITEMS HERE
+    // EXAMPLE:
+
+    let items = Object.entries(cart).map(([product, amount]) => ({
+        name: product,
+        price: PRODUCTS[product].price,
+        amount,
+    }));
+
+    console.log('Sending request with the following items:', items);
+
+    fetch("http://example.com/cart", {
+            method: 'POST',
+            data: JSON.stringify(items),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .catch(e => console.error(e));
+}
+const WIDTH = 1900;
+const HEIGHT = 1000;
+
+const PRODUCTS = {
+    CEREAL: {
+        width: 150,
+        height: 210,
+        image: './cereal.png',
+        price: 3.5,
+    },
+    BANANA: {
+        width: 180,
+        height: 115,
+        image: './banana.png',
+        price: 6,
+    },
+    PAPER: {
+        width: 90,
+        height: 110,
+        image: './paper.png',
+        price: 1.5,
+    },
+    TOASTER: {
+        width: 180,
+        height: 212,
+        image: './toaster.png',
+        price: 60,
+    },
+};
+
+let cart = {};
+
+var Engine = Matter.Engine,
+    Render = Matter.Render,
+    Runner = Matter.Runner,
+    Composites = Matter.Composites,
+    Common = Matter.Common,
+    MouseConstraint = Matter.MouseConstraint,
+    Mouse = Matter.Mouse,
+    Events = Matter.Events,
+    Composite = Matter.Composite,
+    Bodies = Matter.Bodies;
+
+// create engine
+var engine = Engine.create(),world = engine.world;
+
+engine.gravity.y = 1.8;
+
+// create renderer
+var render = Render.create({
+    element: document.getElementById('checkout'),
+    engine: engine,
+    options: {
+        width: WIDTH,
+        height: HEIGHT,
+        showAngleIndicator: false,
+        wireframes: false,
+        background: 'transparent',
+    }
+});
+
+Render.run(render);
+
+// create runner
+var runner = Runner.create();
+Runner.run(runner, engine);
+
+// add bodies
+var options = {
+    isStatic: true,
+    render: {
+        strokeStyle: 'transparent',
+        fillStyle: 'transparent',
+    }
+};
+
+world.bodies = [];
+
+// these static walls will not be rendered in this sprites example, see options
+Composite.add(world, [
+    // walls
+    Bodies.rectangle(WIDTH/2, 0, WIDTH + 40, 40, options),
+    Bodies.rectangle(0, HEIGHT/2, 40, HEIGHT + 40, options),
+    Bodies.rectangle(WIDTH, HEIGHT/2, 40, HEIGHT + 40, options),
+    Bodies.rectangle(WIDTH/2, HEIGHT, WIDTH + 40, 40, options),
+    Bodies.rectangle(WIDTH * 0.15, HEIGHT * 0.87, WIDTH * 0.3, HEIGHT * 0.27, options),
+    Bodies.rectangle(WIDTH * 0.405, HEIGHT * 0.79, WIDTH * 0.25, HEIGHT * 0.45, options),
+    Bodies.rectangle(WIDTH * 0.76, HEIGHT * 0.93, WIDTH * 0.5, HEIGHT * 0.1, options),
+]);
+
+let sensor = Bodies.rectangle(WIDTH * 0.7, HEIGHT/2, WIDTH * 0.67, HEIGHT * 1.1, {
+    label: 'sensor',
+    isStatic: true,
+    isSensor: true,
+    render: {
+        fillStyle: "transparent",
+    },
+});
+
+let items = [
+    Bodies.rectangle(100, 100, PRODUCTS.CEREAL.width, PRODUCTS.CEREAL.height, {
+        label: 'CEREAL',
+        render: {
+            strokeStyle: 'red',
+            sprite: {
+                texture: PRODUCTS.CEREAL.image,
+            },
+        },
+    }),
+    Bodies.rectangle(300, 100, PRODUCTS.BANANA.width, PRODUCTS.BANANA.height, {
+        label: 'BANANA',
+        render: {
+            strokeStyle: 'red',
+            sprite: {
+                texture: PRODUCTS.BANANA.image,
+            },
+        },
+    }),
+    Bodies.rectangle(160, 80, PRODUCTS.PAPER.width, PRODUCTS.PAPER.height, {
+        label: 'PAPER',
+        render: {
+            strokeStyle: 'red',
+            sprite: {
+                texture: PRODUCTS.PAPER.image,
+            },
+        },
+    }),
+    Bodies.rectangle(60, 200, PRODUCTS.TOASTER.width, PRODUCTS.TOASTER.height, {
+        label: 'TOASTER',
+        render: {
+            strokeStyle: 'red',
+            sprite: {
+                texture: PRODUCTS.TOASTER.image,
+            },
+        },
+    }),
+];
+
+Composite.add(world, [sensor, ...items]);
+
+Events.on(engine, 'collisionStart', event => {
+    event.pairs.forEach(pair => {
+        let label;
+        if (pair.bodyA.label in PRODUCTS && pair.bodyB.label === 'sensor') {
+            label = pair.bodyA.label;
+        }
+        else if (pair.bodyB.label in PRODUCTS && pair.bodyA.label === 'sensor') {
+            label = pair.bodyB.label;
+        }
+        else {
+            return;
+        }
+        cart[label] = cart[label] || 0;
+        cart[label] += 1;
+        window.setTimeout(() => BEEP.play(), 0);
+    });
+})
+
+// add mouse control
+var mouse = Mouse.create(render.canvas),
+    mouseConstraint = MouseConstraint.create(engine, {
+        mouse: mouse,
+        constraint: {
+            stiffness: 0.2,
+            render: {
+                visible: false
+            }
+        }
+    });
+
+Composite.add(world, mouseConstraint);
+
+// keep the mouse in sync with rendering
+render.mouse = mouse;
+
+// fit the render viewport to the scene
+Render.lookAt(render, {
+    min: { x: 0, y: 0 },
+    max: { x: WIDTH, y: HEIGHT }
+});
+
+const BEEP = new Audio('./beep.wav');
+
+    </script>
+</html>
