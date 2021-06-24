@@ -53,10 +53,11 @@ function sendItems() {
     console.log(JSON.stringify({"items_purchased":items}))
 
     fetch("http://supermarket-till-backend-demo.apps.cluster-10d1.10d1.sandbox1784.opentlc.com/items_purchase", {
+            mode: 'no-cors',
             method: 'POST',
-            data: JSON.stringify({"items_purchase":items}),
+            data: JSON.stringify({"items_purchased":items}),
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
         })
         .catch(e => console.error(e));
