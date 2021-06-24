@@ -42,20 +42,19 @@ ${'TOTAL'.padEnd(10)}   ${Object.entries(cart).reduce((acc, [product, amount]) =
 `);
 }
 function sendItems() {
-    // SEND THE REQUEST WITH ITEMS HERE
-    // EXAMPLE:
-
     let items = Object.entries(cart).map(([product, amount]) => ({
-        name: product,
+        sku: product,
         price: PRODUCTS[product].price,
         amount,
     }));
 
     console.log('Sending request with the following items:', items);
 
-    fetch("http://example.com/cart", {
+    console.log(JSON.stringify({"items_purchased":items}))
+
+    fetch("http://supermarket-till-backend-demo.apps.cluster-10d1.10d1.sandbox1784.opentlc.com/items_purchase", {
             method: 'POST',
-            data: JSON.stringify(items),
+            data: JSON.stringify({"items_purchase":items}),
             headers: {
                 'Content-Type': 'application/json',
             },
