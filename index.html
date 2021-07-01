@@ -54,7 +54,7 @@ function sendItems() {
 
     console.log(JSON.stringify(data))
 
-    fetch("http://supermarket-till-backend-demo.apps.cluster-10d1.10d1.sandbox1784.opentlc.com/items_purchase", {
+    fetch("http://till-backend-demo.apps.cluster-10d1.10d1.sandbox1784.opentlc.com/items_purchase", {
             mode: 'no-cors',
             method: 'POST',
             body: JSON.stringify(data),
@@ -68,27 +68,27 @@ const WIDTH = 1900;
 const HEIGHT = 1000;
 
 const PRODUCTS = {
-    CEREAL: {
-        width: 150,
-        height: 210,
+    cereals: {
+        width: 75,
+        height: 105,
         image: './cereal.png',
         price: 3.5,
     },
-    BANANA: {
-        width: 180,
-        height: 115,
+    bananas: {
+        width: 90,
+        height: 62,
         image: './banana.png',
         price: 6,
     },
-    PAPER: {
-        width: 90,
-        height: 110,
+    papers: {
+        width: 45,
+        height: 55,
         image: './paper.png',
         price: 1.5,
     },
-    TOASTER: {
-        width: 180,
-        height: 212,
+    toasters: {
+        width: 90,
+        height: 106,
         image: './toaster.png',
         price: 60,
     },
@@ -164,39 +164,84 @@ let sensor = Bodies.rectangle(WIDTH * 0.7, HEIGHT/2, WIDTH * 0.67, HEIGHT * 1.1,
 });
 
 let items = [
-    Bodies.rectangle(100, 100, PRODUCTS.CEREAL.width, PRODUCTS.CEREAL.height, {
-        label: 'CEREAL',
+    Bodies.rectangle(100, 100, PRODUCTS.cereals.width, PRODUCTS.cereals.height, {
+        label: 'cereals',
         render: {
             strokeStyle: 'red',
             sprite: {
-                texture: PRODUCTS.CEREAL.image,
+                texture: PRODUCTS.cereals.image,
             },
         },
     }),
-    Bodies.rectangle(300, 100, PRODUCTS.BANANA.width, PRODUCTS.BANANA.height, {
-        label: 'BANANA',
+    Bodies.rectangle(100, 100, PRODUCTS.cereals.width, PRODUCTS.cereals.height, {
+        label: 'cereals',
         render: {
             strokeStyle: 'red',
             sprite: {
-                texture: PRODUCTS.BANANA.image,
+                texture: PRODUCTS.cereals.image,
             },
         },
     }),
-    Bodies.rectangle(160, 80, PRODUCTS.PAPER.width, PRODUCTS.PAPER.height, {
-        label: 'PAPER',
+    Bodies.rectangle(100, 100, PRODUCTS.cereals.width, PRODUCTS.cereals.height, {
+        label: 'cereals',
         render: {
             strokeStyle: 'red',
             sprite: {
-                texture: PRODUCTS.PAPER.image,
+                texture: PRODUCTS.cereals.image,
             },
         },
     }),
-    Bodies.rectangle(60, 200, PRODUCTS.TOASTER.width, PRODUCTS.TOASTER.height, {
-        label: 'TOASTER',
+    Bodies.rectangle(300, 100, PRODUCTS.bananas.width, PRODUCTS.bananas.height, {
+        label: 'bananas',
         render: {
             strokeStyle: 'red',
             sprite: {
-                texture: PRODUCTS.TOASTER.image,
+                texture: PRODUCTS.bananas.image,
+            },
+        },
+    }),
+    Bodies.rectangle(300, 100, PRODUCTS.bananas.width, PRODUCTS.bananas.height, {
+        label: 'bananas',
+        render: {
+            strokeStyle: 'red',
+            sprite: {
+                texture: PRODUCTS.bananas.image,
+            },
+        },
+    }),
+    Bodies.rectangle(300, 100, PRODUCTS.bananas.width, PRODUCTS.bananas.height, {
+        label: 'bananas',
+        render: {
+            strokeStyle: 'red',
+            sprite: {
+                texture: PRODUCTS.bananas.image,
+            },
+        },
+    }),
+    Bodies.rectangle(300, 100, PRODUCTS.bananas.width, PRODUCTS.bananas.height, {
+        label: 'bananas',
+        render: {
+            strokeStyle: 'red',
+            sprite: {
+                texture: PRODUCTS.bananas.image,
+            },
+        },
+    }),
+    Bodies.rectangle(160, 80, PRODUCTS.papers.width, PRODUCTS.papers.height, {
+        label: 'papers',
+        render: {
+            strokeStyle: 'red',
+            sprite: {
+                texture: PRODUCTS.papers.image,
+            },
+        },
+    }),
+    Bodies.rectangle(60, 200, PRODUCTS.toasters.width, PRODUCTS.toasters.height, {
+        label: 'toasters',
+        render: {
+            strokeStyle: 'red',
+            sprite: {
+                texture: PRODUCTS.toasters.image,
             },
         },
     }),
