@@ -54,7 +54,7 @@ function sendItems() {
 
     console.log(JSON.stringify(data))
 
-    fetch("http://till-backend-supermarket.apps.cluster-3504.3504.sandbox1114.opentlc.com/items_purchase", {
+    fetch("http://till-backend-store-demo.apps.cluster-3504.3504.sandbox1114.opentlc.com/items_purchase", {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
