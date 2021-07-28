@@ -53,7 +53,7 @@ function sendItems() {
     for (let item of items) {
         console.log(JSON.stringify(item))
 
-        fetch("http://api-gateway-supermarket-test.apps.cluster-89f4.89f4.sandbox633.opentlc.com/product_purchase", {
+        fetch("http://api-gateway-supermarket.apps.cluster-89f4.89f4.sandbox633.opentlc.com/product_purchase", {
                 method: 'POST',
                 mode: 'cors', 
                 body: JSON.stringify(item),
